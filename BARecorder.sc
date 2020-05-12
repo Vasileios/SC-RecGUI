@@ -1,3 +1,5 @@
+//Vasilis Agiomyrgianakis 200512\\
+//See the README file for information and examples
 BARecorder{
 	classvar <>server;
 	var name;

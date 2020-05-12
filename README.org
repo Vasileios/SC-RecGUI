@@ -1,6 +1,6 @@
 #+Title: BARecorder documentation
 #+Author:Vasilis Agiomyrgianakis
-// \2020/ \\
+//\\ Vasilis Agiomyrgianakis 200512 \\//
 * Multichannel recorder GUI
 
 *BARecorder* is a GUI for SuperCollider which provides options for multichannel
