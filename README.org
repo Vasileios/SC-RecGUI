@@ -31,6 +31,10 @@ fork{
 
 Recompile SuperCollider's class library and start BARecorder GUI.
 
+After that go and create a folder in your Desktop and name it "tests". By default this
+is the directory of the recorded files. You can change this to yours
+recordings directory.
+
 * Tests with synths (gen, sampling, in)
 
 First run the BARecorder GUI
@@ -39,10 +43,9 @@ First run the BARecorder GUI
 BARecorder(s);
 #+END_SRC
 
-#+RESULTS:
-: BARecorder(s);
 
-A BARecorder stores 8 busses and a buffer to the memory after evaluation. In addition, there are 8 synth names you can use as variable of your synth.
+A BARecorder stores 8 busses and buffers to the memory after evaluation. In addition, you need to use the 8 synth names as variables of your synths.
+See below how to use synth names, busses and buffers when you use the  BARecorder.
 
 Use ~syn[n] variable to call a synthName from the list where n is a
 number from 0 to 7.
