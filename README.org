@@ -1,0 +1,104 @@
+#+Title: BARecorder documentation
+#+Author:Vasilis Agiomyrgianakis
+// \2020/ \\
+* Multichannel recorder GUI
+
+*BARecorder* is a GUI for SuperCollider which provides options for multichannel
+recording (the default is 8 channels), audio file format
+selection (wav, aif), resolution Format selection, compressor with side-chain
+option and an 8 channel scope view.
+
+** Installation guide
+
+Clone BARecorder to your SuperCollider Extensions folder.
+You also need to add the below code into your =startup.scd=
+#+BEGIN_SRC sclang
+~currentSampleFormat = ~currentSampleFormat;
+
+s.waitForBoot{
+fork{
+	2.wait;
+	"Recorder SampleFormat :".postln;
+	~recSampleFormat = ServerOptions.new;
+	0.1.wait;
+	~currentSampleFormat = Server.local.recSampleFormat_(~currentSampleFormat);
+	0.1.wait;
+	~currentSampleFormat.postln;
+		~recSampleFormat.recSampleFormat_(~currentSampleFormat).postln;
+}
+}
+#+END_SRC
+
+Recompile SuperCollider's class library and start BARecorder GUI.
+
+* Tests with synths (gen, sampling, in)
+
+First run the BARecorder GUI
+
+#+BEGIN_SRC sclang
+BARecorder(s);
+#+END_SRC
+
+#+RESULTS:
+: BARecorder(s);
+
+A BARecorder stores 8 busses and a buffer to the memory after evaluation. In addition, there are 8 synth names you can use as variable of your synth.
+
+Use ~syn[n] variable to call a synthName from the list where n is a
+number from 0 to 7.
+Use ~buffer[1] to ~buffer[8]. *Don't use ~buffer[0]*.
+Use ~bus[n] variable to call a bus from the list [0-7] so as to
+connect your synth with the recorder.
+
+** Examples
+*** Run an 8 channel synth
+
+#+BEGIN_SRC sclang
+//s.boot;
+~syns[0] = SynthDef(\sin, {|freq, bus|
+	z = SinOsc.ar(550);
+	Out.ar([bus, 1, 2, 3, 4, 5, 6, 7], PanAz.ar(8, z, LFSaw.kr(MouseX.kr(0.2, 10, 'exponential'))))
+}).play(s, [\bus, ~bus[0]]);
+#+END_SRC
+
+
+*** Run 2 synths L-R channels
+
+#+BEGIN_SRC sclang
+~syns[1] = SynthDef(\sin, {|freq, bus, pan = 0|
+	z = SinOsc.ar(550+4)*Mix.ar(SinOsc.ar([80, 81], 0, 0.3));
+	Out.ar(bus, z)
+}).play(s, [\bus, ~bus[0]]);
+#+END_SRC
+
+
+#+BEGIN_SRC sclang
+~syns[2] = SynthDef(\saw, {|freq, bus, pan = 0|
+	z = Saw.ar(550+4)* Mix.ar(SinOsc.ar([80, 81],0, 0.3));
+	Out.ar(bus, z)
+}).play(s, [\bus, ~bus[1]]);
+#+END_SRC
+
+*** Sampling
+#+BEGIN_SRC sclang
+
+~buffer[1] = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav").postln;
+
+~syns[6] = SynthDef(\help_PlayBuf, {| bus, bufnum |
+    Out.ar(bus,
+        PlayBuf.ar(1, bufnum, BufRateScale.kr(bufnum), loop: 1.0)
+    )
+}).play(s, [\bus, ~bus[0], \effectbus, ~busControl, \bufnum, ~buffer[1].bufnum]);
+#+END_SRC
+
+** Mic-Line
+#+BEGIN_SRC sclang
+
+//Built-in Microphone
+~syns[4] = SynthDef(\linein, {|bus, in=0|
+	z=SoundIn.ar(in);
+	Out.ar(bus, z);
+}).play(s, [\bus, ~bus[0].index]);
+
+
+#+END_SRC
