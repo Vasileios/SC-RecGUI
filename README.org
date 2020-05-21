@@ -45,13 +45,13 @@ BARecorder(s);
 
 
 A BARecorder stores 8 busses and buffers to the memory after evaluation. In addition, you need to use the 8 synth names as variables of your synths.
-See below how to use synth names, busses and buffers when you use the  BARecorder.
+See below how to use synth names, busses and buffers when you use the BARecorder.
 
 Use ~syn[n] variable to call a synthName from the list where n is a
 number from 0 to 7.
 Use ~buffer[1] to ~buffer[8]. *Don't use ~buffer[0]*.
 Use ~bus[n] variable to call a bus from the list [0-7] so as to
-connect your synth with the recorder.
+connect your synth with the compressor and the scope view of BARecorder.
 
 ** Examples
 *** Run an 8 channel synth
