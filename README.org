@@ -44,14 +44,21 @@ BARecorder(s);
 #+END_SRC
 
 
-A BARecorder stores 8 busses and buffers to the memory after evaluation. In addition, you need to use the 8 synth names as variables of your synths.
-See below how to use synth names, busses and buffers when you use the BARecorder.
+A BARecorder stores 8 busses and buffers to the memory after
+evaluation. 
 
-Use ~syn[n] variable to call a synthName from the list where n is a
+You can use the already made  environmental
+variables which comes after evaluation of BARecorder to name your
+synths. 
+
+For example:
+
+Use ~syn[n] environmental variable to call a synthName from the list where n is a
 number from 0 to 7.
 Use ~buffer[1] to ~buffer[8]. *Don't use ~buffer[0]*.
-Use ~bus[n] variable to call a bus from the list [0-7] so as to
-connect your synth with the compressor and the scope view of BARecorder.
+Use ~bus[n] variable to call a bus from the list [0-7] 
+
+See the below SuperCollider examples for more.
 
 ** Examples
 *** Run an 8 channel synth
@@ -81,7 +88,23 @@ connect your synth with the compressor and the scope view of BARecorder.
 	Out.ar(bus, z)
 }).play(s, [\bus, ~bus[1]]);
 #+END_SRC
+*** Play with Patterns
+#+BEGIN_SRC sclang
+~syns[2] = SynthDef(\saw, {|freq = 440, bus, pan = 0|
+	var env, source;
+	env = EnvGen.kr(Env.perc, doneAction:2);
+	source = Saw.ar(freq+4)* Mix.ar(SinOsc.ar([80, 81],0, 0.3));
+	Out.ar(bus, Pan2.ar(source*env, pan))
+}).add;
 
+Pbind(\instrument, \saw,
+	\freq, Pseq([200, 300, 400], inf),
+	\bus, ~bus[0],
+	\dur, 0.5,
+	\pan, Pseq((0.1..0.9), inf)
+).play;
+
+#+END_SRC
 *** Sampling
 #+BEGIN_SRC sclang
 
